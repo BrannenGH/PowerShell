@@ -285,6 +285,7 @@ namespace Microsoft.PowerShell.Commands
         public string KeyFilePath;
         public int Port;
         public string Subsystem;
+        public Hashtable Options;
     }
 
     /// <summary>
@@ -789,6 +790,14 @@ namespace Microsoft.PowerShell.Commands
                    ParameterSetName = InvokeCommandCommand.SSHHostParameterSet)]
         public virtual string Subsystem { get; set; }
 
+        
+        /// <summary>
+        /// Hashtable containing options to be passed to OpenSSH.
+        /// </summary>
+        [Parameter(ParameterSetName = InvokeCommandCommand.SSHHostParameterSet)]
+        [ValidateNotNullOrEmpty()]
+        public virtual Hashtable Options { get; set; }
+
         #endregion
 
         #endregion Properties
@@ -849,6 +858,7 @@ namespace Microsoft.PowerShell.Commands
         private const string IdentityFilePathAlias = "IdentityFilePath";
         private const string PortParameter = "Port";
         private const string SubsystemParameter = "Subsystem";
+        private const string OptionsParameter = "Options";
 
         #endregion
 
@@ -947,6 +957,10 @@ namespace Microsoft.PowerShell.Commands
                     else if (paramName.Equals(SubsystemParameter, StringComparison.OrdinalIgnoreCase))
                     {
                         connectionInfo.Subsystem = GetSSHConnectionStringParameter(item[paramName]);
+                    }
+                    else if (paramName.Equals(OptionsParameter, StringComparison.OrdinalIgnoreCase))
+                    {
+                        connectionInfo.Options = item[paramName] as Hashtable;
                     }
                     else
                     {
@@ -1441,7 +1455,7 @@ namespace Microsoft.PowerShell.Commands
             {
                 ParseSshHostName(computerName, out string host, out string userName, out int port);
 
-                var sshConnectionInfo = new SSHConnectionInfo(userName, host, this.KeyFilePath, port, this.Subsystem);
+                var sshConnectionInfo = new SSHConnectionInfo(userName, host, this.KeyFilePath, port, this.Subsystem, this.Options);
                 var typeTable = TypeTable.LoadDefaultTypeFiles();
                 var remoteRunspace = RunspaceFactory.CreateRunspace(sshConnectionInfo, this.Host, typeTable) as RemoteRunspace;
                 var pipeline = CreatePipeline(remoteRunspace);

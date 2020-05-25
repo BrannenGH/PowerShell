@@ -54,6 +54,13 @@ Describe "SSHRemoting Basic Tests" -tags CI {
             VerifySession $script:session
         }
 
+        It "Verifies explicit Options parameter" {
+            $options = @{"Port"="22"}
+            $script:session = New-PSSession -HostName localhost -Options $options -ErrorVariable err
+            $err | Should -HaveCount 0
+            VerifySession $script:session
+        }
+
         It "Verifies explicit Subsystem parameter" {
             $portNum = 22
             $subSystem = 'powershell'
