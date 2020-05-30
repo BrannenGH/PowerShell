@@ -773,7 +773,7 @@ namespace Microsoft.PowerShell.Commands
         /// </summary>
         [Parameter(ParameterSetName = InvokeCommandCommand.SSHHostParameterSet)]
         [Parameter(ParameterSetName = InvokeCommandCommand.FilePathSSHHostParameterSet)]
-        [ValidateNotNullOrEmpty()]
+        [ValidateNotNullOrEmpty]
         public override Hashtable Options
         {
             get 
@@ -786,7 +786,6 @@ namespace Microsoft.PowerShell.Commands
                 base.Options = value;
             }
         }
-
 
         #endregion
 
