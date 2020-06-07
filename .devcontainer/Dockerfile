@@ -13,12 +13,17 @@ RUN apt-get update \
     && apt-get -y install --no-install-recommends apt-utils 2>&1 \
     #
     # Verify git, process tools, lsb-release (common in install instructions for CLIs) installed
-    && apt-get -y install --no-install-recommends git procps lsb-release \
+    && apt-get -y install --no-install-recommends git procps lsb-release openssh-server \
     #
     # Clean up
     && apt-get autoremove -y \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
+    && rm -rf /root/.ssh/known_hosts
+
+COPY ./SSHDocker/ssh/* /etc/ssh/
+COPY ./SSHDocker/authorized_keys /root/.ssh/authorized_keys
+COPY ./SSHDocker/id_rsa /root/.ssh/id_rsa
 
 # Switch back to dialog for any ad-hoc use of apt-get
 ENV DEBIAN_FRONTEND=dialog
